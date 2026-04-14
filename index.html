@@ -3,85 +3,120 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formula Random Race</title>
+    <title>Race Control Dashboard</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app">
-      <section class="panel">
-        <h1>Formula Random Race</h1>
-        <p class="subtitle">Enter racers, set laps, then let the technical course decide the winner.</p>
+    <main class="dashboard">
+      <header class="top-bar panel">
+        <div>
+          <h1>Race Control Dashboard</h1>
+          <p class="subtitle">Single-seater style telemetry simulator with dynamic pace zones.</p>
+        </div>
+        <div class="top-stats">
+          <div class="stat-chip"><span>Cars</span><strong id="carCount">0</strong></div>
+          <div class="stat-chip"><span>Laps</span><strong id="lapCount">0</strong></div>
+          <div class="stat-chip"><span>Phase</span><strong id="racePhase">Ready</strong></div>
+        </div>
+      </header>
 
-        <label for="nameInput">Racer names (one per line, up to 100)</label>
-        <textarea id="nameInput" placeholder="Alex\nJordan\nCasey\nTaylor"></textarea>
+      <section class="panel controls-panel">
+        <label for="nameInput">Driver names (one per line, up to 100)</label>
+        <textarea id="nameInput" placeholder="Driver 1&#10;Driver 2&#10;Driver 3"></textarea>
 
         <div class="controls">
           <label for="lapsInput">Laps</label>
-          <input id="lapsInput" type="number" min="1" max="50" value="5" />
+          <input id="lapsInput" type="number" min="1" max="60" value="8" />
           <button id="startBtn" type="button">Start Race</button>
           <button id="resetBtn" type="button" class="secondary">Reset</button>
         </div>
 
-        <div id="status" class="status">Add at least 2 racers to begin.</div>
-
-        <h2>Live Leaderboard</h2>
-        <ol id="leaderboard" class="leaderboard"></ol>
-
-        <div id="winner" class="winner" aria-live="polite"></div>
+        <div id="status" class="status">Add at least 2 drivers to begin.</div>
       </section>
 
-      <section class="race-wrap" aria-label="Race Track">
-        <svg id="trackSvg" viewBox="0 0 900 600" role="img" aria-label="Racing track with formula cars">
+      <section class="panel track-panel" aria-label="Track map panel">
+        <div class="track-header">
+          <h2>Central Circuit View</h2>
+          <div class="legend">
+            <span><i class="box straight"></i>Straight</span>
+            <span><i class="box corner"></i>Corner</span>
+          </div>
+        </div>
+
+        <svg id="trackSvg" viewBox="0 0 1000 640" role="img" aria-label="Race track with corners and long straights">
           <defs>
+            <linearGradient id="bgGrid" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#08131f" />
+              <stop offset="100%" stop-color="#0b1f31" />
+            </linearGradient>
             <linearGradient id="asphalt" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#2f2f37" />
-              <stop offset="100%" stop-color="#1d1d23" />
+              <stop offset="0%" stop-color="#2f333a" />
+              <stop offset="100%" stop-color="#181c23" />
             </linearGradient>
           </defs>
 
-          <rect x="0" y="0" width="900" height="600" fill="#0f6a2a" />
+          <rect x="0" y="0" width="1000" height="640" fill="url(#bgGrid)" />
+
+          <g opacity="0.2" stroke="#6ea5d7" stroke-width="1">
+            <path d="M0 80 H1000 M0 160 H1000 M0 240 H1000 M0 320 H1000 M0 400 H1000 M0 480 H1000 M0 560 H1000" />
+            <path d="M125 0 V640 M250 0 V640 M375 0 V640 M500 0 V640 M625 0 V640 M750 0 V640 M875 0 V640" />
+          </g>
 
           <path
-            d="M 120 150
-               C 220 70, 360 70, 450 150
-               C 520 210, 610 220, 700 170
-               C 790 120, 850 180, 810 250
-               C 770 320, 700 330, 650 380
-               C 600 430, 640 500, 730 510
-               C 820 520, 820 570, 700 560
-               C 560 545, 470 500, 390 520
-               C 300 545, 180 550, 120 500
-               C 60 450, 90 380, 150 340
-               C 210 300, 220 240, 160 210
-               C 110 185, 90 170, 120 150 Z"
+            d="M 110 320
+               C 125 195, 220 130, 360 132
+               L 700 135
+               C 825 137, 905 188, 900 278
+               C 897 340, 855 382, 787 395
+               C 847 420, 886 468, 892 530
+               C 900 600, 840 620, 705 612
+               L 330 607
+               C 175 600, 95 545, 108 457
+               C 116 400, 160 358, 228 338
+               C 160 318, 116 376, 110 320 Z"
             fill="url(#asphalt)"
           />
 
           <path
             id="lanePath"
-            d="M 170 180
-               C 250 125, 360 120, 430 175
-               C 495 225, 585 240, 675 190
-               C 750 145, 790 190, 760 250
-               C 730 310, 660 320, 620 365
-               C 580 410, 610 460, 680 470
-               C 760 482, 760 520, 670 515
-               C 550 505, 470 465, 405 485
-               C 320 510, 220 515, 170 470
-               C 120 425, 145 370, 195 335
-               C 250 295, 255 245, 205 215
-               C 170 195, 150 190, 170 180 Z"
+            d="M 152 320
+               C 168 222, 240 176, 360 178
+               L 682 181
+               C 780 181, 844 214, 840 276
+               C 838 335, 778 366, 690 368
+               C 792 372, 845 430, 846 518
+               C 846 565, 797 572, 700 568
+               L 322 564
+               C 198 561, 148 522, 152 458
+               C 156 395, 220 370, 300 367
+               C 220 360, 156 394, 152 320 Z"
             fill="none"
-            stroke="#cfd6de"
+            stroke="#d6e1ec"
             stroke-width="6"
-            stroke-dasharray="14 14"
+            stroke-dasharray="12 10"
           />
 
-          <circle cx="170" cy="180" r="13" fill="#fff" />
-          <text x="195" y="186" fill="#fff" font-size="20" font-weight="700">START</text>
+          <line x1="152" y1="300" x2="152" y2="340" stroke="#ffffff" stroke-width="5" />
+          <text x="174" y="328" fill="#ffffff" font-size="18" font-weight="700">START</text>
 
           <g id="carsLayer"></g>
         </svg>
+      </section>
+
+      <section class="panel board-panel">
+        <h2>Live Standings</h2>
+        <ol id="leaderboard" class="leaderboard"></ol>
+        <div id="winner" class="winner" aria-live="polite"></div>
+      </section>
+
+      <section class="panel telemetry-panel">
+        <h2>Race Telemetry</h2>
+        <div class="telemetry-grid">
+          <div class="metric"><span>Top Speed</span><strong id="topSpeed">0 km/h</strong></div>
+          <div class="metric"><span>Avg Speed</span><strong id="avgSpeed">0 km/h</strong></div>
+          <div class="metric"><span>Fastest Lap</span><strong id="fastestLap">--</strong></div>
+          <div class="metric"><span>Track Bias</span><strong id="trackBias">Balanced</strong></div>
+        </div>
       </section>
     </main>
 
