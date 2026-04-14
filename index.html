@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formula Random Race</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel">
+        <h1>Formula Random Race</h1>
+        <p class="subtitle">Enter racers, set laps, then let the track decide the winner.</p>
+
+        <label for="nameInput">Racer names (one per line)</label>
+        <textarea id="nameInput" placeholder="Alex\nJordan\nCasey\nTaylor"></textarea>
+
+        <div class="controls">
+          <label for="lapsInput">Laps</label>
+          <input id="lapsInput" type="number" min="1" max="50" value="5" />
+          <button id="startBtn" type="button">Start Race</button>
+          <button id="resetBtn" type="button" class="secondary">Reset</button>
+        </div>
+
+        <div id="status" class="status">Add at least 2 racers to begin.</div>
+
+        <h2>Live Leaderboard</h2>
+        <ol id="leaderboard" class="leaderboard"></ol>
+
+        <div id="winner" class="winner" aria-live="polite"></div>
+      </section>
+
+      <section class="race-wrap" aria-label="Race Track">
+        <svg id="trackSvg" viewBox="0 0 900 600" role="img" aria-label="Racing track with formula cars">
+          <defs>
+            <linearGradient id="asphalt" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2f2f37" />
+              <stop offset="100%" stop-color="#1d1d23" />
+            </linearGradient>
+          </defs>
+
+          <rect x="0" y="0" width="900" height="600" fill="#0f6a2a" />
+
+          <path
+            d="M 120 130
+               C 280 40, 620 40, 780 130
+               C 870 190, 870 410, 780 470
+               C 620 560, 280 560, 120 470
+               C 30 410, 30 190, 120 130 Z"
+            fill="url(#asphalt)"
+          />
+
+          <path
+            id="lanePath"
+            d="M 170 170
+               C 300 90, 600 90, 730 170
+               C 805 220, 805 380, 730 430
+               C 600 510, 300 510, 170 430
+               C 95 380, 95 220, 170 170 Z"
+            fill="none"
+            stroke="#cfd6de"
+            stroke-width="6"
+            stroke-dasharray="14 14"
+          />
+
+          <circle cx="170" cy="170" r="13" fill="#fff" />
+          <text x="195" y="176" fill="#fff" font-size="20" font-weight="700">START</text>
+
+          <g id="carsLayer"></g>
+        </svg>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
