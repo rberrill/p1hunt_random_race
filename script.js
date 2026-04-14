@@ -8,6 +8,8 @@ const winnerEl = document.getElementById('winner');
 const lanePath = document.getElementById('lanePath');
 const carsLayer = document.getElementById('carsLayer');
 const MAX_RACERS = 100;
+const TURN_SAMPLE_COUNT = 720;
+const CURVATURE_STEP = 3;
 
 const carColors = [
   '#ff4b2b',
@@ -23,6 +25,7 @@ const carColors = [
 ];
 
 const pathLength = lanePath.getTotalLength();
+const turnProfile = buildTurnProfile();
 let raceState = null;
 let animationId = null;
 let lastTime = null;
@@ -36,15 +39,68 @@ function parseNames() {
 }
 
 function makeCar(name, index) {
+  const corneringGrip = 0.1 + Math.random() * 0.04;
+  const topStraightSpeed = corneringGrip + 0.08 + Math.random() * 0.05;
   return {
     name,
     lap: 0,
     progress: 0,
-    speed: 0.12 + Math.random() * 0.11,
+    speed: corneringGrip + 0.03,
     targetSpeed: 0,
+    corneringGrip,
+    topStraightSpeed,
+    phase: Math.random() * Math.PI * 2,
     color: carColors[index % carColors.length],
     element: null
   };
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function normalizeAngle(radians) {
+  let angle = radians;
+  while (angle > Math.PI) {
+    angle -= Math.PI * 2;
+  }
+  while (angle < -Math.PI) {
+    angle += Math.PI * 2;
+  }
+  return angle;
+}
+
+function buildTurnProfile() {
+  const intensities = new Array(TURN_SAMPLE_COUNT).fill(0);
+
+  for (let i = 0; i < TURN_SAMPLE_COUNT; i += 1) {
+    const dist = (i / TURN_SAMPLE_COUNT) * pathLength;
+    const before = lanePath.getPointAtLength((dist - CURVATURE_STEP + pathLength) % pathLength);
+    const current = lanePath.getPointAtLength(dist);
+    const after = lanePath.getPointAtLength((dist + CURVATURE_STEP) % pathLength);
+    const angle1 = Math.atan2(current.y - before.y, current.x - before.x);
+    const angle2 = Math.atan2(after.y - current.y, after.x - current.x);
+    const delta = Math.abs(normalizeAngle(angle2 - angle1));
+    intensities[i] = clamp(delta / 0.22, 0, 1);
+  }
+
+  const smoothed = intensities.map((_, i) => {
+    let sum = 0;
+    const window = 5;
+    for (let step = -window; step <= window; step += 1) {
+      const idx = (i + step + TURN_SAMPLE_COUNT) % TURN_SAMPLE_COUNT;
+      sum += intensities[idx];
+    }
+    return sum / (window * 2 + 1);
+  });
+
+  return smoothed;
+}
+
+function getTurnIntensity(progress) {
+  const wrapped = ((progress % 1) + 1) % 1;
+  const idx = Math.floor(wrapped * TURN_SAMPLE_COUNT) % TURN_SAMPLE_COUNT;
+  return turnProfile[idx];
 }
 
 function createCarElement(car) {
@@ -117,14 +173,6 @@ function resetRace(clearNames = false) {
   }
 }
 
-function pickTargetSpeeds(cars) {
-  for (const car of cars) {
-    const variance = 0.075 + Math.random() * 0.11;
-    const wave = Math.sin(performance.now() / 1300 + car.name.length) * 0.03;
-    car.targetSpeed = Math.max(0.08, variance + wave);
-  }
-}
-
 function animate(timestamp) {
   if (!raceState) {
     return;
@@ -139,12 +187,16 @@ function animate(timestamp) {
 
   const { cars, laps } = raceState;
 
-  if (Math.random() < 0.07) {
-    pickTargetSpeeds(cars);
-  }
-
   for (const car of cars) {
-    car.speed += (car.targetSpeed - car.speed) * 0.055;
+    const turnIntensity = getTurnIntensity(car.progress);
+    const straightPortion = 1 - turnIntensity;
+    const pulse = Math.sin(timestamp / 500 + car.phase) * 0.006;
+    const desiredSpeed =
+      car.corneringGrip + (car.topStraightSpeed - car.corneringGrip) * straightPortion + pulse;
+
+    car.targetSpeed = clamp(desiredSpeed, car.corneringGrip * 0.92, car.topStraightSpeed * 1.04);
+    const response = car.speed > car.targetSpeed ? 0.14 : 0.045;
+    car.speed += (car.targetSpeed - car.speed) * response;
     car.progress += car.speed * delta;
 
     while (car.progress >= 1) {
