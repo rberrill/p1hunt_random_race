@@ -10,7 +10,7 @@
     <main class="app">
       <section class="panel">
         <h1>Formula Random Race</h1>
-        <p class="subtitle">Enter racers, set laps, then let the track decide the winner.</p>
+        <p class="subtitle">Enter racers, set laps, then let the technical course decide the winner.</p>
 
         <label for="nameInput">Racer names (one per line, up to 100)</label>
         <textarea id="nameInput" placeholder="Alex\nJordan\nCasey\nTaylor"></textarea>
@@ -42,29 +42,43 @@
           <rect x="0" y="0" width="900" height="600" fill="#0f6a2a" />
 
           <path
-            d="M 120 130
-               C 280 40, 620 40, 780 130
-               C 870 190, 870 410, 780 470
-               C 620 560, 280 560, 120 470
-               C 30 410, 30 190, 120 130 Z"
+            d="M 120 150
+               C 220 70, 360 70, 450 150
+               C 520 210, 610 220, 700 170
+               C 790 120, 850 180, 810 250
+               C 770 320, 700 330, 650 380
+               C 600 430, 640 500, 730 510
+               C 820 520, 820 570, 700 560
+               C 560 545, 470 500, 390 520
+               C 300 545, 180 550, 120 500
+               C 60 450, 90 380, 150 340
+               C 210 300, 220 240, 160 210
+               C 110 185, 90 170, 120 150 Z"
             fill="url(#asphalt)"
           />
 
           <path
             id="lanePath"
-            d="M 170 170
-               C 300 90, 600 90, 730 170
-               C 805 220, 805 380, 730 430
-               C 600 510, 300 510, 170 430
-               C 95 380, 95 220, 170 170 Z"
+            d="M 170 180
+               C 250 125, 360 120, 430 175
+               C 495 225, 585 240, 675 190
+               C 750 145, 790 190, 760 250
+               C 730 310, 660 320, 620 365
+               C 580 410, 610 460, 680 470
+               C 760 482, 760 520, 670 515
+               C 550 505, 470 465, 405 485
+               C 320 510, 220 515, 170 470
+               C 120 425, 145 370, 195 335
+               C 250 295, 255 245, 205 215
+               C 170 195, 150 190, 170 180 Z"
             fill="none"
             stroke="#cfd6de"
             stroke-width="6"
             stroke-dasharray="14 14"
           />
 
-          <circle cx="170" cy="170" r="13" fill="#fff" />
-          <text x="195" y="176" fill="#fff" font-size="20" font-weight="700">START</text>
+          <circle cx="170" cy="180" r="13" fill="#fff" />
+          <text x="195" y="186" fill="#fff" font-size="20" font-weight="700">START</text>
 
           <g id="carsLayer"></g>
         </svg>
