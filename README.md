@@ -1,10 +1,13 @@
-# Formula Random Race
+# Apex Dash Race Lab
 
-A lightweight web app where you enter racer names, choose lap count, and run a colorful formula-car race with changing leaders and a random winner.
+A polished, dashboard-style open-wheel race simulator where you can run up to 100 drivers on a technical circuit featuring:
+
+- multiple left/right corners,
+- two long straights,
+- dynamic speed behavior (slower in corners, faster on straights),
+- live timing + telemetry-inspired race UI.
 
 ## Run locally
-
-Because this is a static app, you can run any simple file server:
 
 ```bash
 python3 -m http.server 8000
