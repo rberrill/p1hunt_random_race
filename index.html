@@ -3,85 +3,133 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Formula Random Race</title>
+    <title>Open Wheel Grand Dash</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="app">
-      <section class="panel">
-        <h1>Formula Random Race</h1>
-        <p class="subtitle">Enter racers, set laps, then let the technical course decide the winner.</p>
+    <main class="dashboard">
+      <header class="topbar">
+        <h1>Open Wheel Grand Dash</h1>
+        <p class="subtitle">Precision race simulator with dynamic pace changes across corners and long straights.</p>
+      </header>
 
-        <label for="nameInput">Racer names (one per line, up to 100)</label>
-        <textarea id="nameInput" placeholder="Alex\nJordan\nCasey\nTaylor"></textarea>
+      <section class="control-panel">
+        <div class="input-block">
+          <label for="nameInput">Driver names (one per line, up to 100)</label>
+          <textarea id="nameInput" placeholder="Alex\nJordan\nCasey\nTaylor"></textarea>
+        </div>
 
-        <div class="controls">
+        <div class="race-config">
           <label for="lapsInput">Laps</label>
-          <input id="lapsInput" type="number" min="1" max="50" value="5" />
+          <input id="lapsInput" type="number" min="1" max="50" value="6" />
           <button id="startBtn" type="button">Start Race</button>
           <button id="resetBtn" type="button" class="secondary">Reset</button>
         </div>
 
-        <div id="status" class="status">Add at least 2 racers to begin.</div>
-
-        <h2>Live Leaderboard</h2>
-        <ol id="leaderboard" class="leaderboard"></ol>
-
-        <div id="winner" class="winner" aria-live="polite"></div>
+        <div class="telemetry">
+          <div class="tile">
+            <span class="tile-label">Race Status</span>
+            <span id="status" class="tile-value">Add at least 2 drivers to begin.</span>
+          </div>
+          <div class="tile">
+            <span class="tile-label">Track Profile</span>
+            <span id="trackProfile" class="tile-value">Waiting</span>
+          </div>
+          <div class="tile">
+            <span class="tile-label">Leader</span>
+            <span id="leaderName" class="tile-value">—</span>
+          </div>
+          <div class="tile winner-tile">
+            <span class="tile-label">Winner</span>
+            <span id="winner" class="tile-value" aria-live="polite"></span>
+          </div>
+        </div>
       </section>
 
-      <section class="race-wrap" aria-label="Race Track">
-        <svg id="trackSvg" viewBox="0 0 900 600" role="img" aria-label="Racing track with formula cars">
-          <defs>
-            <linearGradient id="asphalt" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#2f2f37" />
-              <stop offset="100%" stop-color="#1d1d23" />
-            </linearGradient>
-          </defs>
+      <section class="center-stage" aria-label="Race Track Dashboard">
+        <div class="track-frame">
+          <svg id="trackSvg" viewBox="0 0 1200 720" role="img" aria-label="Open-wheel race track with two long straights and mixed corners">
+            <defs>
+              <linearGradient id="asphalt" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#2b3139" />
+                <stop offset="100%" stop-color="#171b20" />
+              </linearGradient>
+              <linearGradient id="runoff" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#0057ff" />
+                <stop offset="100%" stop-color="#00a2ff" />
+              </linearGradient>
+            </defs>
 
-          <rect x="0" y="0" width="900" height="600" fill="#0f6a2a" />
+            <rect x="0" y="0" width="1200" height="720" fill="#0a2a16" />
 
-          <path
-            d="M 120 150
-               C 220 70, 360 70, 450 150
-               C 520 210, 610 220, 700 170
-               C 790 120, 850 180, 810 250
-               C 770 320, 700 330, 650 380
-               C 600 430, 640 500, 730 510
-               C 820 520, 820 570, 700 560
-               C 560 545, 470 500, 390 520
-               C 300 545, 180 550, 120 500
-               C 60 450, 90 380, 150 340
-               C 210 300, 220 240, 160 210
-               C 110 185, 90 170, 120 150 Z"
-            fill="url(#asphalt)"
-          />
+            <path
+              d="M 160 210
+                 C 210 130, 330 110, 500 125
+                 L 930 135
+                 C 1040 145, 1110 220, 1070 300
+                 C 1030 380, 930 410, 850 410
+                 C 780 410, 735 455, 735 520
+                 C 735 590, 800 640, 920 630
+                 L 470 625
+                 C 330 620, 220 585, 170 530
+                 C 120 475, 125 390, 205 350
+                 C 295 305, 305 250, 225 228
+                 C 193 220, 170 217, 160 210 Z"
+              fill="url(#asphalt)"
+            />
 
-          <path
-            id="lanePath"
-            d="M 170 180
-               C 250 125, 360 120, 430 175
-               C 495 225, 585 240, 675 190
-               C 750 145, 790 190, 760 250
-               C 730 310, 660 320, 620 365
-               C 580 410, 610 460, 680 470
-               C 760 482, 760 520, 670 515
-               C 550 505, 470 465, 405 485
-               C 320 510, 220 515, 170 470
-               C 120 425, 145 370, 195 335
-               C 250 295, 255 245, 205 215
-               C 170 195, 150 190, 170 180 Z"
-            fill="none"
-            stroke="#cfd6de"
-            stroke-width="6"
-            stroke-dasharray="14 14"
-          />
+            <path
+              d="M 185 236
+                 C 225 170, 338 155, 500 168
+                 L 900 175
+                 C 980 182, 1033 236, 1008 290
+                 C 982 344, 915 368, 852 368
+                 C 748 368, 688 437, 688 520
+                 C 688 598, 762 602, 864 595
+                 L 500 588
+                 C 368 586, 268 557, 222 509
+                 C 176 461, 181 404, 246 370
+                 C 334 323, 349 242, 239 230
+                 C 208 228, 191 233, 185 236 Z"
+              fill="none"
+              stroke="url(#runoff)"
+              stroke-width="18"
+              stroke-linejoin="round"
+              opacity="0.4"
+            />
 
-          <circle cx="170" cy="180" r="13" fill="#fff" />
-          <text x="195" y="186" fill="#fff" font-size="20" font-weight="700">START</text>
+            <path
+              id="lanePath"
+              d="M 190 238
+                 C 228 177, 338 162, 498 175
+                 L 898 182
+                 C 972 188, 1017 238, 994 289
+                 C 970 341, 910 362, 851 362
+                 C 740 362, 675 437, 675 522
+                 C 675 605, 758 596, 855 589
+                 L 500 582
+                 C 371 580, 278 554, 236 510
+                 C 194 468, 199 409, 258 378
+                 C 343 335, 359 244, 247 231
+                 C 213 227, 196 233, 190 238 Z"
+              fill="none"
+              stroke="#dce6f5"
+              stroke-width="7"
+              stroke-linecap="round"
+              stroke-dasharray="16 14"
+            />
 
-          <g id="carsLayer"></g>
-        </svg>
+            <circle cx="190" cy="238" r="14" fill="#ffffff" />
+            <text x="218" y="245" fill="#ffffff" font-size="23" font-weight="700">START / FINISH</text>
+
+            <g id="carsLayer"></g>
+          </svg>
+        </div>
+
+        <aside class="leaderboard-wrap">
+          <h2>Live Leaderboard</h2>
+          <ol id="leaderboard" class="leaderboard"></ol>
+        </aside>
       </section>
     </main>
 
