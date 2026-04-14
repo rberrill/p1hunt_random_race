@@ -1,13 +1,18 @@
-# Formula Random Race
+# Race Control Dashboard
 
-A lightweight web app where you enter racer names, choose lap count, and run a colorful formula-car race with changing leaders and a random winner.
+A polished, static web race simulator inspired by modern single-seater telemetry layouts.
+
+## Highlights
+
+- Supports up to **100 drivers**.
+- Centered main circuit view with **multiple left/right corners** and **two long straight sections**.
+- Dynamic pace model where cars run **faster on straights** and **slower in corners**.
+- Dashboard interface with race phase, live standings, speed metrics, and fastest lap tracking.
 
 ## Run locally
-
-Because this is a static app, you can run any simple file server:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then open `http://localhost:8000`.
+Open `http://localhost:8000`.
