@@ -7,6 +7,7 @@ const leaderboardEl = document.getElementById('leaderboard');
 const winnerEl = document.getElementById('winner');
 const lanePath = document.getElementById('lanePath');
 const carsLayer = document.getElementById('carsLayer');
+const MAX_RACERS = 100;
 
 const carColors = [
   '#ff4b2b',
@@ -31,7 +32,7 @@ function parseNames() {
     .split('\n')
     .map((name) => name.trim())
     .filter(Boolean)
-    .slice(0, 10);
+    .slice(0, MAX_RACERS);
 }
 
 function makeCar(name, index) {
@@ -170,8 +171,16 @@ function animate(timestamp) {
 }
 
 function startRace() {
+  const enteredNames = nameInput.value
+    .split('\n')
+    .map((name) => name.trim())
+    .filter(Boolean);
   const names = parseNames();
   const laps = Number(lapsInput.value);
+
+  if (enteredNames.length > MAX_RACERS) {
+    statusEl.textContent = `Only the first ${MAX_RACERS} racers will be used.`;
+  }
 
   if (names.length < 2) {
     statusEl.textContent = 'Please enter at least 2 racer names.';
